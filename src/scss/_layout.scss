@@ -1,0 +1,412 @@
+@use './variables' as *;
+@use './mixin' as *;
+
+
+.L_container {
+    padding-top: 100px;
+
+    @include touch {
+        padding-top: 70px;
+    }
+}
+
+.l_header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    transition: background-color .3s linear;
+
+    @include touch {
+        height: 70px;
+    }
+
+    @include desktop {
+        display: flex;
+        height: 100px;
+        padding: 0 32px 0 40px;
+        margin-right: auto;
+        margin-left: auto;
+        background-color: #fff;
+    }
+
+    //ヘッダーのリンク共通
+    a {}
+
+
+    //インナー
+    &__inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 70px;
+        padding: 0 20px;
+        background-color: #fff;
+        width: 100%;
+
+        @include desktop {
+            height: 100px;
+            padding: 0;
+        }
+    }
+
+    //ロゴ
+    &__logo {
+        width: 160px;
+        height: auto;
+        @include ov;
+
+        @include desktop {
+            width: 240px;
+        }
+
+        svg {
+            width: 160px;
+            height: 40px;
+
+            @include desktop {
+                width: 240px;
+                height: 60px;
+            }
+        }
+
+        path {
+            fill: #3e2b00;
+        }
+    }
+
+    //ハンバーガーボタン
+    &__btn {
+        width: 32px;
+        height: 20px;
+        padding-right: 5px;
+        background: none;
+        display: block;
+        // z-index: 500;
+
+        @include desktop {
+            display: none;
+        }
+
+        span {
+            position: relative;
+            display: block;
+            height: 2px;
+            background: #000;
+            transition: all 0.3s;
+
+            &::before,
+            &::after {
+                position: absolute;
+                left: 0;
+                content: "";
+                display: block;
+                width: 100%;
+                height: 2px;
+                background: #000;
+                transition: all 0.3s;
+            }
+
+            &::before {
+                top: -10px;
+            }
+
+            &::after {
+                bottom: -10px;
+            }
+        }
+    }
+
+    //ハンバーガーメニュー展開時のスタイル
+    @at-root body.is-openMenu {
+
+        //セレクタの一番上へ抜け出す
+        .l_header {
+            background-color: $color_bg_dark;
+        }
+
+        .l_header__inner {
+            background-color: transparent;
+        }
+
+        //ロゴ
+        .l_header__logo path {
+            fill: #fff;
+        }
+
+        //ボタン
+        .l_header__btn {
+            span {
+                background: transparent;
+
+                &::before,
+                &::after {
+                    top: 0;
+                    background-color: #fff;
+                }
+
+                &::before {
+                    rotate: 45deg; //transform: rotate(45deg);
+                }
+
+                &::after {
+                    rotate: -45deg;
+                }
+            }
+        }
+    }
+}
+
+//.l_header
+
+//グローバルナビゲーション
+.l_gnav {
+    align-items: center;
+    // transition: opacity .3s linear;
+
+    @include mobile {
+        pointer-events: none;
+        position: absolute;
+        width: 100%;
+        left: 0;
+        top: 70px; //ヘッダーの高さ
+    }
+
+    @include touch {
+        padding-top: 40px;
+    }
+
+    @include desktop {
+        opacity: 1;
+    }
+
+    @at-root body.is-openMenu {
+        .l_gnav {
+            pointer-events: auto;
+            opacity: 1;
+            height: calc(100vh - 70px);
+            border-color: $color_bg_dark;
+        }
+
+        // @include desktop {
+        //     display: none;
+        // }
+    }
+
+    //リスト
+    &__list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+    }
+
+    @include desktop {
+        flex-direction: row;
+        justify-content: flex-end;
+        height: 100px;
+    }
+}
+
+//アイテム
+&__item {
+    @include fz(18);
+    @include font-webfont_Lato;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+
+    @include desktop {
+        @include fz(15);
+    }
+
+    &+& {
+
+        //+は兄弟。直後。
+        //〇~〇も兄弟。直後じゃなくてもいい。
+        @include touch {
+            margin-top: 26px;
+        }
+    }
+
+    //リンク
+    a {
+        display: block;
+        padding: 0 20px;
+        color: #fff;
+        text-align: center;
+        font-weight: bold;
+
+        @include desktop {
+            color: $color_secondary;
+        }
+    }
+
+    //カートリンク
+    &._cart {
+        @include desktop {
+            margin-left: 16px;
+        }
+
+        //TODO:エレメントコンポーネントのスタイル挿入
+
+    }
+}
+
+//__item
+
+//パンくずリスト
+.l_breadcrumb {
+    padding: 16px 20px 22px;
+    background-color: #e2ded4;
+
+    @include desktop {
+        padding: 16px 40px 22px;
+    }
+
+    &__list {
+        display: flex;
+        margin: 0 auto;
+        flex-wrap: wrap;
+    }
+
+    &__item {
+        display: flex;
+        margin: 0 auto;
+        flex-wrap: wrap;
+
+        //.L_breadcrumb__item + ./l_breadcrumb__item
+        &+& {
+            &::before {
+                content: '/';
+                margin: 0 0.5em;
+            }
+        }
+
+        a {
+            text-decoration: none;
+
+            &:hover {
+                opacity: 0.5;
+            }
+        }
+
+        strong {
+            line-height: 1;
+        }
+    }
+}
+
+
+
+// メイン
+.l_main {
+    min-height: 500px;
+    padding-bottom: 40px;
+    background-color: #ebe9e4;
+}
+
+// フッター
+.l_footer {
+    // background-color: $color_primary;
+
+    &__inner {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 200px;
+        padding: 24px 30px 20px;
+        margin: 0 auto;
+
+        @include desktop {
+            flex-direction: row;
+            max-width: 1280px;
+            padding: 30px 50px;
+        }
+    }
+
+    // ナビゲーション
+    &__nav {
+        display: flex;
+        flex-direction: column;
+
+        @include desktop {
+            flex-direction: row;
+        }
+
+        &Body {
+            display: flex;
+
+            &+& {
+                margin-top: 30px;
+
+                @include desktop {
+                    margin-top: 0;
+                    margin-left: 50px;
+                }
+            }
+        }
+
+        &Name {
+            color: #958154;
+            @include fz(12);
+            text-transform: uppercase;
+            white-space: nowrap; //折り返しなし
+            margin-top: 6px;
+
+            @include mobile {
+                width: 7em;
+            }
+        }
+
+        &List {
+            display: flex;
+            margin-left: 10px;
+            flex-wrap: wrap;
+
+            @include desktop {
+                flex-direction: column;
+                margin-left: 28px;
+            }
+        }
+
+        &Item {
+            @include fz(12);
+            margin-top: 6px;
+
+            text-transform: uppercase;
+
+            &+& {
+                &::before {
+                    content: ' | ';
+                    color: #fff;
+                }
+
+                @include desktop {
+                    content: none;
+                }
+            }
+
+            a {
+                color: #fff;
+            }
+
+        }
+
+    }
+
+    //コピーライト
+    &__copy {
+        color: #fff;
+        @include fz(10);
+        display: flex;
+        flex-direction: row-reverse;
+        margin-top: 30px;
+
+        @include desktop {
+            align-items: flex-end;
+            margin-top: 0;
+        }
+    }
+}
